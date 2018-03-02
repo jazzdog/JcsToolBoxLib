@@ -15,6 +15,12 @@ namespace ToolBoxLib
     /// <returns></returns>
     public delegate int InvokeDelegateAddEvent(CEventInfo cTaskInof);
 
+    /// <summary>
+    /// 給listEventByteData事件處理時,傳遞的資料結構類別
+    /// 主要以事件代碼，子碼來傳遞參數
+    /// 會自動記錄事件資料建立時間(亦可修改)
+    /// 另外亦可額外傳遞:binary,object,以及String資料
+    /// </summary>
     public class CEventInfo
     {
         /// <summary>
@@ -22,36 +28,39 @@ namespace ToolBoxLib
         /// </summary>
         public UInt32 nEventCode;
         /// <summary>
-        /// 事件細項代號
+        /// 事件子代號
         /// </summary>
-        public UInt32 nEventSubCode; 
+        public UInt32 nEventSubCode;
         /// <summary>
-        /// 事件資訊內容
+        /// [額外]事件binary資料=>
+        /// listEventByteData.Add(theBinaryData);
         /// </summary>
         public List<byte[]> listEventByteData = new List<byte[]>();
         /// <summary>
-        /// 自動填入目前時間
+        /// 自動填入目前時間，亦可修改
         /// </summary>
-        /// 
-
         public DateTime tEventTime = DateTime.Now;
 
+        /// <summary>
+        /// [額外]物件資料
+        /// </summary>
         public Object objExtra=null;
 
+        /// <summary>
+        /// [額外]字串資料
+        /// </summary>
         public String strInfo;
 
-
-
-
-        public CEventInfo(UInt32 _nEventCode =0, UInt32 _nEventSubCode = 0)
+        /// <summary>
+        /// 建立傳遞資料結構
+        /// </summary>
+        /// <param name="_nEventCode">事件主碼</param>
+        /// <param name="_nEventSubCode">事件子碼</param>
+        public CEventInfo(UInt32 _nEventCode, UInt32 _nEventSubCode = 0)
         {
             nEventCode = _nEventCode;
-
             nEventSubCode = _nEventSubCode;
-           
         }
-
-
     }
 
     public class CProcEventTask
@@ -99,7 +108,7 @@ namespace ToolBoxLib
 
         public int addTask(CEventInfo cTaskInof)
         {
-            CEventInfo _cTaskInof = new CEventInfo();
+            CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
             _cTaskInof = cTaskInof;
             listEventData.Add(_cTaskInof);
             return listEventData.Count - 1;
@@ -148,7 +157,8 @@ namespace ToolBoxLib
                 }
                 if (listEventData.Count > 0 )
                 {
-                    CEventInfo _cTaskInof = new CEventInfo();
+                    //取得第一筆資料
+                    CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
                     Monitor.Enter(listEventData);
                     _cTaskInof = listEventData[0];
                     listEventData.RemoveAt(0);
