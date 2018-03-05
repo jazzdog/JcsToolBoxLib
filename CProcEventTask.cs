@@ -6,7 +6,65 @@ using System.Threading.Tasks;
 using System.Threading;
 namespace ToolBoxLib
 {
+    /*Example:
+     *    [Declare]
+                static CProcEventTask m_procMainEventTask=null; //[對內]處理各頁面的事件
+                public static CProcEventTask mainEventProc  ///(static)事件處理handle 對外任何頁面都可以取(read only)
+                {
+                    get
+                    {
+                        if (m_procMainEventTask == null)
+                        {
+                            m_procMainEventTask = new CProcEventTask();
+                        }
+                        return m_procMainEventTask;
+                    }
+                }
 
+                /// 事件主代碼
+                public enum eEcode
+                {
+                    DEF_NONE=0,
+                    EVENT_CALL,
+                    EVENT_REPLY,
+                    SYS_ERR,
+                }
+                /// 事件子代碼
+                public enum eSubEcode
+                {
+                    _DEF_NONE = 0,
+                    _ERR,
+                    EVENT_CALL_GET_NAMELIST,
+                }
+            [Init]
+                void initRegEventProc() //建立事件代碼對應表
+                {
+                    mainEventProc.buildProcFuncs((int)eEcode.EVENT_CALL, procEVENT_CALL);
+                    mainEventProc.buildProcFuncs((int)eEcode.EVENT_REPLY, procEVENT_REPLY);
+                    mainEventProc.buildProcFuncs((int)eEcode.SYS_ERR, procEvent_SYS_ERR);
+                    mainEventProc.doRun();  //啟動
+                }
+            [Process]
+                 void procEVENT_CALL(CEventInfo cInfo)
+                {
+                    //根據子代號處理
+                    switch ((eSubEcode)cInfo.nEventSubCode)
+                    {
+                        case eSubEcode._EVENT_CALL_GET_NAMELIST: 
+                            send_GET_NAMELIST();
+                            break;
+                    }
+                }
+            [Add Task]
+                private void bt_getNameList(object sender, EventArgs e)
+                {
+
+                    CEventInfo eventInfo = new CEventInfo((int)eEcode.EVENT_CALL, (int)eSubEcode._EVENT_CALL_GET_NAMELIST);
+                    eventInfo.objExtra = eEcode.EVENT_CALL;
+                    mainEventProc.addTask(eventInfo); //發動事件
+                }
+
+     */
     public delegate void InvokeDelegate(CEventInfo cInfo);
     /// <summary>
     /// 將事件加入列表的界面
