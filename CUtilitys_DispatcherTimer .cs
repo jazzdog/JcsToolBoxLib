@@ -5,8 +5,25 @@ using System.Text;
 using ToolBoxLib;
 
 
+
 namespace ToolBoxLib
 {
+
+    /* Example:
+     *   [Declare]
+     *          DispatcherTimer _timeout = new DispatcherTimer("TimeoutName");
+     *   [init]
+     *           _timeout.m_nEventDurationSec = 10;
+                    if (_timeout.calbkEventTimeup == null)
+                        _timeout.calbkEventTimeup = procTimeout;
+                    _timeout.start();
+         [Callback]
+                void procTimeout(object sender, EventArgs hdlEvent)
+                {
+                    _timeout.stop();
+                    CDebug.jmsg("CGI timout!!");
+                }
+     */
     public class DispatcherTimer : IDisposable
     {
         private System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer() { Interval = TimeSpan.FromSeconds(1) };
