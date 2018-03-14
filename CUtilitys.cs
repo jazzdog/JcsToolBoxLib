@@ -97,8 +97,8 @@ namespace ToolBoxLib
             string strFixed = strErroFormat;
             strFixed = strFixed.Replace(System.Environment.NewLine, string.Empty);
             strFixed = strFixed.Trim();
-            strFixed = strFixed.Replace("{", "{{");
-            strFixed = strFixed.Replace("}", "}}");
+            //strFixed = strFixed.Replace("{", "{{");
+            //strFixed = strFixed.Replace("}", "}}");
             return strFixed;
         }
         public static string StringToUnicode(string srcText)
