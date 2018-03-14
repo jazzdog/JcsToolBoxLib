@@ -84,7 +84,6 @@
     <Compile Include="CUtilitys_FolderFileControl.cs" />
     <Compile Include="CUtilitys_ImageResize.cs" />
     <Compile Include="CUtilitys_NativeMethods.cs" />
-    <Compile Include="CUtilitys_PopupElement.cs" />
     <Compile Include="CUtilitys_System.cs" />
     <Compile Include="CUtilitys_SystemHook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
