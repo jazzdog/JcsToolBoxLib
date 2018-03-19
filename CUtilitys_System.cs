@@ -23,10 +23,9 @@ namespace ToolBoxLib
     public static partial class CUtil
     {
         private static Random jRand = new Random();
-        private static string m_FileLogName = null;
-        private static string m_strLogFileName = "JLOG";
-        private static string m_strFullFilePath;
-        private static StreamWriter _flog;
+       
+        private static string m_strParentPath="";
+       
 #if DEBUG
         readonly static bool T_DEBUG = true;
 #else
@@ -35,7 +34,8 @@ namespace ToolBoxLib
 
         public static string getCurrentPath()
         {
-            return System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
+            //return System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
+            return m_strParentPath;
         }
 
         public static bool isFolderExist(string strPath, bool blCreate)
@@ -59,53 +59,9 @@ namespace ToolBoxLib
             return blExist;
         }
 
-        private static bool initFileLogger()
-        {
-            string logPathname = System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
-            string strMac = getMacAddr()[0];
 
-            logPathname += "\\SaveLog";
-            if (!Directory.Exists(logPathname))
-            {
-                Directory.CreateDirectory(logPathname);
-            }
-            if (m_FileLogName == null)
-                m_strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}.log", logPathname,
-                                               DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, m_strLogFileName, strMac);
-            else
-                m_strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}_{6}.log", logPathname,
-                                                   DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, m_strLogFileName, m_FileLogName, strMac);
-            _flog = new StreamWriter(m_strFullFilePath, true);
-            string strAppFileVersion = CUtil.getAppilcationFileVersion();
-            
-            if (m_FileLogName==null)
-                jlog("\n===================[LOG_HEAD -Ver.{0}-]===================\n\t\t\t{1}\n\t\t\t================================================", strAppFileVersion,m_strFullFilePath);
-            else
-                jlog("\n===================[LOG_HEAD -Ver.{0}- <<{1}>> ]===================\n\t\t\t{2}\n\t\t\t================================================", strAppFileVersion,m_FileLogName, m_strFullFilePath);
-
-
-            return true;
-
-        }
-
-        public static void ChangeLogFileName(string FileName)
-        {
-            if (FileName != null && FileName.Length > 0)
-            {
-                m_FileLogName = FileName;
-                if (_flog != null)
-                {
-                    _flog.Flush();
-                    _flog = null;
-                }
-
-                initFileLogger();
-
-            }
-        }
-
-
-        public static void jlogEx(string log_string, params Object[] args)
+        //public static void jlogEx(string log_string, params Object[] args)
+        public static void jlogEx(string strAbsFilePath, string strLogName, string log_string, params Object[] args)
         {
             StackTrace stack = new StackTrace(1, true); //●取得stackframe的階層(視架構可能需要改變)
             var sf = stack.GetFrame(0); //●取最遠的
@@ -120,41 +76,60 @@ namespace ToolBoxLib
                 log_string = fixStringFormateError(log_string);
                 strMsg = string.Format(log_string, args);
             }
-            jlog("\n\t\t\t[{0}]\n\t\t\t{1}", strFunction, strMsg);
+            jlog(strAbsFilePath, strLogName,"\n\t\t\t[{0}]\n\t\t\t{1}", strFunction, strMsg);
 
         }
-        public static void jlog(string log_string, params Object[] args)
+
+        private static string makeDaliyLogFileName(string strTheFilePath,string strFileName)
         {
-            if (_flog == null)
-            {
-                initFileLogger();
-            }
-            updateFileNamebyDate();
-            if (!File.Exists(m_strFullFilePath))///更換日期
-            {
-                string logPathname = System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
-                if (m_FileLogName==null)
-                m_strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}.log", logPathname,
-                                              DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, m_strLogFileName);
-                else
-                m_strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}.log", logPathname,
-                                                   DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, m_strLogFileName, m_FileLogName);
-                _flog = File.CreateText(m_strFullFilePath);
-
-            }
-            string strMsg2Log;
-            if (args.Length <= 0)
-                strMsg2Log = log_string;
+            string strMac = getMacAddr()[0];
+            if(isStringValid(strTheFilePath, 1) == false)
+                strTheFilePath = System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
+            string strFullFilePath = "";
+            if (isStringValid(strFileName, 1) == false)
+                strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}.log", strTheFilePath,
+                                               DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, strMac);
             else
-                strMsg2Log = string.Format(log_string, args);
-            _flog.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss") + "]> " + strMsg2Log);
-            _flog.Flush();
+                strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}.log", strTheFilePath,
+                                                   DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, strFileName, strMac);
+            return strFullFilePath;
+        }
 
-            if (T_DEBUG == true)
+        public static void jlog( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
+        {
+            string strFullFilePath = makeDaliyLogFileName(strAbsFilePath, strLogName);
+           
+            StreamWriter stmwLog = null;
+            try
             {
-                CDebug.jmsg("{0}", strMsg2Log);
+                if (!Directory.Exists(strAbsFilePath))
+                    Directory.CreateDirectory(strAbsFilePath);
+                stmwLog = new StreamWriter(strFullFilePath, true);
+                string strMsg2Log;
+                if (args.Length <= 0)
+                    strMsg2Log = log_string;
+                else
+                    strMsg2Log = string.Format(log_string, args);
+                if (stmwLog != null)
+                {
+                    stmwLog.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss") + "]> " + strMsg2Log);
+                }
             }
+            catch (System.Exception)
+            {
 
+            }
+            finally
+            {
+                if (stmwLog != null)
+                {
+                    stmwLog.Flush();
+                    stmwLog.Close();
+                    stmwLog = null;
+
+                }
+            }
+            
         }
 
         public static List<string> getIPAddr()
@@ -262,14 +237,14 @@ namespace ToolBoxLib
             {
                 loProcess.MaxWorkingSet = (IntPtr)((int)loProcess.MaxWorkingSet - 1); //1,409,024
                 loProcess.MinWorkingSet = (IntPtr)((int)loProcess.MinWorkingSet - 1); //  200,704
-                CUtil.jlogEx("[clearMemory]MaxWorkingSet={0} MinWorkingSet={1}", loProcess.MaxWorkingSet, loProcess.MinWorkingSet);
+                //CUtil.jlogEx("[clearMemory]MaxWorkingSet={0} MinWorkingSet={1}", loProcess.MaxWorkingSet, loProcess.MinWorkingSet);
             }
             catch (System.Exception)
             {
 
                 loProcess.MaxWorkingSet = (IntPtr)((int)1024*1024);
                 loProcess.MinWorkingSet = (IntPtr)((int)1024*8);
-                CUtil.jlogEx("[clearMemory][●catch●]MaxWorkingSet={0} MinWorkingSet={1}", loProcess.MaxWorkingSet, loProcess.MinWorkingSet);
+                //CUtil.jlogEx("[clearMemory][●catch●]MaxWorkingSet={0} MinWorkingSet={1}", loProcess.MaxWorkingSet, loProcess.MinWorkingSet);
             }
         }
 
@@ -285,7 +260,7 @@ namespace ToolBoxLib
             {
                 loProcess.MinWorkingSet = (IntPtr)(nMaxMemByte/10);
                 loProcess.MaxWorkingSet = (IntPtr)(nMaxMemByte);
-                CUtil.jlogEx("[setMaxMemory]MaxWorkingSet={0} MinWorkingSet={1}", loProcess.MaxWorkingSet, loProcess.MinWorkingSet);
+                //CUtil.jlogEx("[setMaxMemory]MaxWorkingSet={0} MinWorkingSet={1}", loProcess.MaxWorkingSet, loProcess.MinWorkingSet);
             }
             catch (System.Exception e)
             {
@@ -295,7 +270,7 @@ namespace ToolBoxLib
                 //loProcess.MaxWorkingSet = (IntPtr)(loProcess.MinWorkingSet+1024);
                 clearMemory();
                 //loProcess.MinWorkingSet = (IntPtr)((int)loProcess.MinWorkingSet * (int)(2));
-                CUtil.jlogEx("[setMaxMemory][●catch●]MaxWorkingSet={0} MinWorkingSet={1} [e: {2}]", loProcess.MaxWorkingSet, loProcess.MinWorkingSet,e.ToString());
+                //CUtil.jlogEx("[setMaxMemory][●catch●]MaxWorkingSet={0} MinWorkingSet={1} [e: {2}]", loProcess.MaxWorkingSet, loProcess.MinWorkingSet,e.ToString());
             }
         }
 

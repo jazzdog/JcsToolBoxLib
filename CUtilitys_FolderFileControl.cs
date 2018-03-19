@@ -20,21 +20,7 @@ namespace ToolBoxLib
 
     public static partial class CUtil
     {
-        private static void updateFileNamebyDate()
-        {
-            string logPathname = System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
-
-            if (!Directory.Exists(logPathname))
-            {
-                Directory.CreateDirectory(logPathname);
-            }
-            if (m_FileLogName == null)
-                m_strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}.log", logPathname,
-                                               DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, m_strLogFileName);
-            else
-                m_strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}.log", logPathname,
-                                                   DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, m_strLogFileName, m_FileLogName);
-        }
+        
         public static bool checkDirectory(string strFolderPath,bool blCreateDirectory=true)
         {
             if (!Directory.Exists(strFolderPath))
@@ -53,7 +39,7 @@ namespace ToolBoxLib
                 }
                 catch (Exception ex)
                 {
-                    CUtil.jlogEx("[checkDirectory][Err][{0}]", ex.ToString());
+                    //CUtil.jlogEx("[checkDirectory][Err][{0}]", ex.ToString());
                     return false;
                 }
             }
@@ -76,7 +62,7 @@ namespace ToolBoxLib
             catch (IOException eMsg)
             {
 
-                CUtil.jlogEx("搬移檔案錯誤:\n{0}", eMsg.ToString());
+                //CUtil.jlogEx("搬移檔案錯誤:\n{0}", eMsg.ToString());
                 return false;
             }
         }
@@ -115,7 +101,7 @@ namespace ToolBoxLib
             }
             catch (Exception e)
             {
-                CUtil.jlogEx("[Uitl-Err][{0}]",e.ToString());
+                //CUtil.jlogEx("[Uitl-Err][{0}]",e.ToString());
                 return "";
             }
 
@@ -152,7 +138,7 @@ namespace ToolBoxLib
             }
             catch (Exception e)
             {
-                CUtil.jlogEx("[Uitl-Err][{0}]", e.ToString());
+               // CUtil.jlogEx("[Uitl-Err][{0}]", e.ToString());
                 return "";
             }
 
@@ -210,7 +196,7 @@ namespace ToolBoxLib
         {
             if (isFolder(strPath) == false)
             {
-                CUtil.jlogEx("[clearDirectory]Error: invalid Folder Path:{0}",strPath);
+                //CUtil.jlogEx("[clearDirectory]Error: invalid Folder Path:{0}",strPath);
                 return false;
             }
 
@@ -232,7 +218,7 @@ namespace ToolBoxLib
         {
             if (isFolder(strPath) == false)
             {
-                CUtil.jlogEx("[deleteDirectory]Error: invalid Folder Path:{0}", strPath);
+                //CUtil.jlogEx("[deleteDirectory]Error: invalid Folder Path:{0}", strPath);
                 return false;
             }
 
@@ -251,7 +237,7 @@ namespace ToolBoxLib
                 }
                 catch (IOException ioExc)
                 {
-                    CUtil.jlogEx("[deleteDirectory]Error:{0}", ioExc.ToString());
+                    //CUtil.jlogEx("[deleteDirectory]Error:{0}", ioExc.ToString());
                 }
             }
 
@@ -261,7 +247,7 @@ namespace ToolBoxLib
             }
             catch (IOException ioExc)
             {
-                CUtil.jlogEx("[deleteDirectory]Error:{0}", ioExc.ToString());
+                //CUtil.jlogEx("[deleteDirectory]Error:{0}", ioExc.ToString());
                 return false;
             }
             return true;

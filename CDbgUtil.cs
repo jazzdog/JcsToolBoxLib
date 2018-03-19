@@ -8,7 +8,13 @@ using System.Windows.Forms;
 
 namespace ToolBoxLib
 {
-    
+    public class dinfo
+    {
+        public string filename;
+        public string functionname;
+        public int nLine;
+        public int nCol;
+    }
     public class CDebug
     {
         /// <summary>
@@ -33,6 +39,19 @@ namespace ToolBoxLib
             }
         }
 
+       
+
+        public static dinfo dInfo()
+        {
+            StackTrace stack = new StackTrace(1, true); //●取得stackframe的階層(視架構可能需要改變)
+            StackFrame sf = stack.GetFrame(0); //●取最遠的
+            dinfo dinfo = new dinfo();
+            dinfo.filename = sf.GetFileName();
+            dinfo.functionname = sf.GetMethod().ToString();
+            dinfo.nLine = sf.GetFileLineNumber();
+            dinfo.nCol = sf.GetFileColumnNumber();
+            return dinfo;
+        }
        
 
 
