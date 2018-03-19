@@ -41,10 +41,10 @@ namespace ToolBoxLib
 
        
 
-        public static dinfo dInfo()
+        public static dinfo dInfo(int nSkeepLevel=1)
         {
-            StackTrace stack = new StackTrace(1, true); //●取得stackframe的階層(視架構可能需要改變)
-            StackFrame sf = stack.GetFrame(0); //●取最遠的
+            StackTrace stack = new StackTrace(nSkeepLevel, true); //●取得stackframe的階層(視架構可能需要改變)
+            StackFrame sf = stack.GetFrame(0); //●0 取最遠的
             dinfo dinfo = new dinfo();
             dinfo.filename = sf.GetFileName();
             dinfo.functionname = sf.GetMethod().ToString();
