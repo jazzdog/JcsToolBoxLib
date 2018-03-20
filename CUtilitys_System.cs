@@ -13,7 +13,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
-
+using System.Security.Cryptography;
 
 
 namespace ToolBoxLib
@@ -212,9 +212,9 @@ namespace ToolBoxLib
         }
 
 
-        public static string getCurrentDateTimeString()
+        public static string getCurrentDateTimeString(string strDateTimeFormate = "yyyy_MM_dd_HHmmss")
         {
-            string strDateTime = DateTime.Now.ToString("yyyy_MM_dd_HHmmss");
+            string strDateTime = DateTime.Now.ToString(strDateTimeFormate);
             return strDateTime;
         }
 
@@ -320,7 +320,44 @@ namespace ToolBoxLib
             string strDayOnly = string.Format("{0:0000}/{1:00}/{2:00}", dtToday.Year, dtToday.Month, dtToday.Day);
             return strDayOnly;
         }
-        
+
+        public static double getDateTimeinSec(string strDateTime="", string strDateTimeFormate = "yyyy/MM/dd HH:mm")
+        {
+            DateTime theDateTime;
+            if (isStringValid(strDateTime, 8) == true)
+                theDateTime = convertStringToDateTime(strDateTime, strDateTimeFormate);
+            else
+                theDateTime = DateTime.Now;
+            double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+            return theTime;
+        }
+
+        public static DateTime convertSec2DateTime(double dbDatetimeInSec)
+        {
+            DateTime dt0 = new DateTime(1970, 1, 1);
+            DateTime dtfommls = dt0.AddMilliseconds(dbDatetimeInSec * 1000);
+            return dtfommls;
+        }
+
+        public static string makeMD5(string strInput)
+        {
+            MD5 md5 = MD5.Create();//建立一個MD5
+            // byte[] source = Encoding.Default.GetBytes(strInput);//將字串轉為Byte[]
+            //byte[] crypto = md5.ComputeHash(source);//進行MD5加密
+            //string result = Convert.ToBase64String(crypto);//把加密後的字串從Byte[]轉為字串
+            byte[] bresult = md5.ComputeHash(System.Text.Encoding.Default.GetBytes(strInput));
+            string result = "";
+            for (int i = 0; i < bresult.Length; i++)
+            {
+                // 将得到的字符串使用十六进制类型格式。格式后的字符是小写的字母，如果使用大写（X）则格式后的字符是大写字符 
+                string strTheCode = bresult[i].ToString("x");
+                if (strTheCode.Length <= 1)
+                    strTheCode = "0" + strTheCode;
+                result = result + strTheCode;
+            }
+            //string result = System.Text.Encoding.Default.GetString(bresult);
+            return result;
+        }
 
     }
 }
