@@ -212,9 +212,13 @@ namespace ToolBoxLib
         }
 
 
-        public static string getCurrentDateTimeString(string strDateTimeFormate = "yyyy_MM_dd_HHmmss")
+        public static string getCurrentDateTimeString(string strDateTimeFormate = "yyyy_MM_dd_HHmmss",int nOffSetSec=0)
         {
-            string strDateTime = DateTime.Now.ToString(strDateTimeFormate);
+            string strDateTime = "";
+            if (nOffSetSec!=0)
+                strDateTime = DateTime.Now.AddSeconds(nOffSetSec).ToString(strDateTimeFormate);
+            else
+                strDateTime = DateTime.Now.ToString(strDateTimeFormate);
             return strDateTime;
         }
 
