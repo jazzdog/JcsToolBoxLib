@@ -163,6 +163,13 @@ namespace ToolBoxLib
 
         }
 
+        public int addTask(uint eMainCode, uint eSubCode, string strExtroInfo = "")
+        {
+            CEventInfo _cTaskInof = new CEventInfo(eMainCode, eSubCode);///初始化UInt32最大值
+            if (CUtil.isStringValid(strExtroInfo, 1) == true)
+                _cTaskInof.strInfo = strExtroInfo;
+            return addTask(_cTaskInof);
+        }
 
         public int addTask(CEventInfo cTaskInof)
         {

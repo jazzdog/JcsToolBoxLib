@@ -30,11 +30,11 @@ namespace ToolBoxLib
             }
             catch (Exception e)
             {
-                //strBugMsg = strBugMsg.Replace(System.Environment.NewLine, string.Empty);
-                //strBugMsg = strBugMsg.Trim();
-                //strBugMsg = strBugMsg.Replace("{", "{{");
-                //strBugMsg = strBugMsg.Replace("}", "}}");
                 strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+                //strBugMsg = strBugMsg.Replace("\"", "$"); //如果要列印過複雜的字串將引號去除
+                //strBugMsg = strBugMsg.Replace("\\", "?"); //如果要列印過複雜的字串將引號去除
+                strBugMsg = strBugMsg.Replace("{", "<"); //如果要列印過複雜的字串將引號去除
+                strBugMsg = strBugMsg.Replace("}", ">"); //如果要列印過複雜的字串將引號去除
                 Debug.Write(String.Format(strBugMsg + ":"+e.ToString()+"\n", args));
             }
         }
