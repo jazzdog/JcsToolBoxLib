@@ -224,10 +224,14 @@ namespace ToolBoxLib
 
         public static DateTime convertStringToDateTime(string strDateTime,string strDateTimeFormate = "yyyy/MM/dd HH:mm")
         {
-            DateTimeFormatInfo dtFormat = new System.Globalization.DateTimeFormatInfo();
-
-            dtFormat.ShortDatePattern = strDateTimeFormate;
-            return Convert.ToDateTime(strDateTime, dtFormat);
+            if (strDateTimeFormate == null)
+                return Convert.ToDateTime(strDateTime);
+            else
+            {
+                DateTimeFormatInfo dtFormat = new System.Globalization.DateTimeFormatInfo();
+                dtFormat.ShortDatePattern = strDateTimeFormate;
+                return Convert.ToDateTime(strDateTime, dtFormat);
+            }
         }
 
         /// <summary>
@@ -328,8 +332,21 @@ namespace ToolBoxLib
         public static double getDateTimeinSec(string strDateTime="", string strDateTimeFormate = "yyyy/MM/dd HH:mm")
         {
             DateTime theDateTime;
-            if (isStringValid(strDateTime, 8) == true)
+            //if (isStringValid(strDateTime, 8) == true)
+            if (isDateTimeString(strDateTime) == true)
                 theDateTime = convertStringToDateTime(strDateTime, strDateTimeFormate);
+            else
+                theDateTime = DateTime.Now;
+            double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+            return theTime;
+        }
+
+        public static double getDateTimeinSec(DateTime theDt)
+        {
+            DateTime theDateTime;
+            //if (isStringValid(strDateTime, 8) == true)
+            if (theDt!= null)
+                theDateTime = theDt;
             else
                 theDateTime = DateTime.Now;
             double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;

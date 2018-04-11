@@ -26,20 +26,28 @@ namespace ToolBoxLib
         {
             try
             {
-                Debug.Write(String.Format(strBugMsg + "\n", args));
+                string _fix_strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+
+                if (args.Length > 0)
+                    _fix_strBugMsg = String.Format(_fix_strBugMsg, args);
+
+                Debug.Write(_fix_strBugMsg+"\n");
             }
             catch (Exception e)
             {
-                strBugMsg = CUtil.fixStringFormateError(strBugMsg);
-                //strBugMsg = strBugMsg.Replace("\"", "$"); //如果要列印過複雜的字串將引號去除
-                //strBugMsg = strBugMsg.Replace("\\", "?"); //如果要列印過複雜的字串將引號去除
-                strBugMsg = strBugMsg.Replace("{", "<"); //如果要列印過複雜的字串將引號去除
-                strBugMsg = strBugMsg.Replace("}", ">"); //如果要列印過複雜的字串將引號去除
-                Debug.Write(String.Format(strBugMsg + ":"+e.ToString()+"\n", args));
+                /*System.FormatException: 輸入字串格式不正確。
+                 * 因為輸入JSON 包含{} 造成arg以為是參數序號{0},{1},...=>輸入字串格式不正確
+                 */
+
+                string _fix_strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+                _fix_strBugMsg = _fix_strBugMsg.Replace("{", "{{"); //如果要列印過複雜的字串將引號去除
+                _fix_strBugMsg = _fix_strBugMsg.Replace("}", "}}"); //如果要列印過複雜的字串將引號去除
+                Debug.Write(String.Format(_fix_strBugMsg + ":" + e.ToString() + "\n", args));
+                //Debug.Write(strBugMsg);
             }
         }
 
-       
+
 
         public static dinfo dInfo(int nSkeepLevel=1)
         {
