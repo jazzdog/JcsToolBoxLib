@@ -112,7 +112,7 @@ namespace ToolBoxLib
                     strMsg2Log = string.Format(log_string, args);
                 if (stmwLog != null)
                 {
-                    stmwLog.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss") + "]> " + strMsg2Log);
+                    stmwLog.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss.ffffff") + "]> " + strMsg2Log);
                 }
             }
             catch (System.Exception)
