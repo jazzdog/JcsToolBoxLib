@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Threading;
 
 
 namespace ToolBoxLib
@@ -95,29 +96,54 @@ namespace ToolBoxLib
             return strFullFilePath;
         }
 
-        public static void jlog( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
+        public static bool jlog( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
         {
             string strFullFilePath = makeDaliyLogFileName(strAbsFilePath, strLogName);
            
             StreamWriter stmwLog = null;
             try
             {
-                if (!Directory.Exists(strAbsFilePath))
-                    Directory.CreateDirectory(strAbsFilePath);
-                stmwLog = new StreamWriter(strFullFilePath, true);
                 string strMsg2Log;
                 if (args.Length <= 0)
                     strMsg2Log = log_string;
                 else
                     strMsg2Log = string.Format(log_string, args);
+
+                if (!Directory.Exists(strAbsFilePath))
+                    Directory.CreateDirectory(strAbsFilePath);
+                stmwLog = new StreamWriter(strFullFilePath, true);
+                int nRetry = 0;
+                while (stmwLog==null && nRetry<10000)
+                {
+                    SpinWait.SpinUntil(() => false, 10);
+                    stmwLog = new StreamWriter(strFullFilePath, true);
+                    nRetry++;
+                }
+
+                bool blRes = false;
                 if (stmwLog != null)
                 {
                     stmwLog.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss.ffffff") + "]> " + strMsg2Log);
+                    stmwLog.Flush();
+                    stmwLog.Close();
+                    stmwLog = null;
+                    blRes = true;
                 }
+                else
+                    blRes= false;
+
+                return blRes;
             }
             catch (System.Exception)
             {
+                if (stmwLog != null)
+                {
+                    stmwLog.Flush();
+                    stmwLog.Close();
+                    stmwLog = null;
 
+                }
+                return false;
             }
             finally
             {
@@ -128,6 +154,7 @@ namespace ToolBoxLib
                     stmwLog = null;
 
                 }
+                
             }
             
         }

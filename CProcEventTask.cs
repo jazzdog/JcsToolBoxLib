@@ -165,7 +165,7 @@ namespace ToolBoxLib
 
         public int addTask(uint eMainCode, uint eSubCode, string strExtroInfo = "")
         {
-            CDebug.jmsgEx("[addTask]{0}:{1}:{2}", eMainCode, eSubCode, strExtroInfo);
+            //CDebug.jmsgEx("[addTask]{0}:{1}:{2}", eMainCode, eSubCode, strExtroInfo);
             CEventInfo _cTaskInof = new CEventInfo(eMainCode, eSubCode);///初始化UInt32最大值
             if (CUtil.isStringValid(strExtroInfo, 1) == true)
                 _cTaskInof.strInfo = strExtroInfo;
