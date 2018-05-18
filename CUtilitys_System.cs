@@ -111,11 +111,11 @@ namespace ToolBoxLib
 
                 if (!Directory.Exists(strAbsFilePath))
                     Directory.CreateDirectory(strAbsFilePath);
-                stmwLog = new StreamWriter(strFullFilePath, true);
+                //stmwLog = new StreamWriter(strFullFilePath, true);
                 int nRetry = 0;
                 while (stmwLog==null && nRetry<10000)
                 {
-                    SpinWait.SpinUntil(() => false, 10);
+                    SpinWait.SpinUntil(() => false, 1);
                     stmwLog = new StreamWriter(strFullFilePath, true);
                     nRetry++;
                 }
