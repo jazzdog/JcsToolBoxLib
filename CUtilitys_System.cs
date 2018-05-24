@@ -385,7 +385,8 @@ namespace ToolBoxLib
         {
             DateTime dt0 = new DateTime(1970, 1, 1);
             DateTime dtfommls = dt0.AddMilliseconds(dbDatetimeInSec * 1000);
-            return dtfommls;
+
+            return dtfommls.ToLocalTime();
         }
 
         public static string makeMD5(string strInput)
