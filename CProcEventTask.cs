@@ -130,6 +130,8 @@ namespace ToolBoxLib
         public InvokeDelegateAddEvent delgAddEvent;
 
         private List<CEventInfo> listEventData = new List<CEventInfo>();
+        public int eventLeftCount { get { return listEventData.Count; } private set { return; } }
+        
         private List<Thread> listProcThread = new List<Thread>();
         private Dictionary<UInt32, InvokeDelegate> listProcFuncitons = new Dictionary<UInt32, InvokeDelegate>();
         private volatile bool m_stop = true;
@@ -223,19 +225,20 @@ namespace ToolBoxLib
                 }
                 if (listEventData.Count > 0 )
                 {
-                    //取得第一筆資料
-                    CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
-                    Monitor.Enter(listEventData);
-                    _cTaskInof = listEventData[0];
-                    listEventData.RemoveAt(0);
-                    if (_cTaskInof == null)
-                        continue;
-                    
-                    Monitor.Enter(listEventData);
-
-                    InvokeDelegate fnProcThis;
                     try
                     {
+                        //取得第一筆資料
+                        CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
+                        Monitor.Enter(listEventData);
+                        _cTaskInof = listEventData[0];
+                        listEventData.RemoveAt(0);
+                        if (_cTaskInof == null)
+                            continue;
+                    
+                        Monitor.Enter(listEventData);
+
+                        InvokeDelegate fnProcThis;
+                    
                         if (listProcFuncitons.TryGetValue(_cTaskInof.nEventCode, out fnProcThis))
                         {
                             Thread thProcEvent = new Thread(() => fnProcThis(_cTaskInof));

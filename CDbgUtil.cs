@@ -47,6 +47,32 @@ namespace ToolBoxLib
             }
         }
 
+        public static void jmsgt(String strBugMsg, params Object[] args)
+        {
+            try
+            {
+                string strNowTime = CUtil.getCurrentDateTimeString("MM-dd hh:mm:ss:ffff");
+                string _fix_strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+
+                if (args.Length > 0)
+                    _fix_strBugMsg = String.Format(_fix_strBugMsg, args);
+
+                Debug.Write("["+ strNowTime+"]"+_fix_strBugMsg + "\n");
+            }
+            catch (Exception e)
+            {
+                /*System.FormatException: 輸入字串格式不正確。
+                 * 因為輸入JSON 包含{} 造成arg以為是參數序號{0},{1},...=>輸入字串格式不正確
+                 */
+
+                string _fix_strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+                _fix_strBugMsg = _fix_strBugMsg.Replace("{", "{{"); //如果要列印過複雜的字串將引號去除
+                _fix_strBugMsg = _fix_strBugMsg.Replace("}", "}}"); //如果要列印過複雜的字串將引號去除
+                Debug.Write(String.Format(_fix_strBugMsg + ":" + e.ToString() + "\n", args));
+                //Debug.Write(strBugMsg);
+            }
+        }
+
 
 
         public static dinfo dInfo(int nSkeepLevel=1)

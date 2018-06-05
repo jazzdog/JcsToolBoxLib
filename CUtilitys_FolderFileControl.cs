@@ -274,6 +274,33 @@ namespace ToolBoxLib
             return fileMediaInfo.Length;
         }
 
+        public static int delFileinFolder(string strPathFolder, string strPartialFileName="")
+        {
+            int nFindFileCount = -1;
+            try
+            {
+
+                DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(strPathFolder);
+                FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles("*" + strPartialFileName + "*.*");
+                nFindFileCount = filesInDir.Count();
+               
+                foreach (FileInfo foundFile in filesInDir)
+                {
+                    string fullName = foundFile.FullName;
+
+                    CUtil.delFile(fullName);
+                }
+                return nFindFileCount;
+            }
+            catch (Exception ee)
+            {
+                CDebug.jmsg("[delFileinFolder]:[{0}]:[{1}->{2}]", ee.ToString(), strPathFolder, strPartialFileName);
+                return -1;
+                
+            }
+           
+        }
+
         public static bool delFile(string strPath)
         {
             if (isFile(strPath) == false)
