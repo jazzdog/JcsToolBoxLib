@@ -85,7 +85,11 @@ namespace ToolBoxLib
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(AStr));
         }
 
-
+        public static string getEnumNamebyCode<T>(uint unCode)
+        {
+            T theMainCode = (T)System.Enum.Parse(typeof(T), unCode.ToString());
+            return theMainCode.ToString();
+        }
 
         public static string Base64Decode(string ABase64)
         {
