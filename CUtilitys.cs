@@ -105,6 +105,17 @@ namespace ToolBoxLib
             //strFixed = strFixed.Replace("}", "}}");
             return strFixed;
         }
+
+        public static string bytelistToString(List<byte> thebyteList)
+        {
+            if (thebyteList?.Count > 0)
+            {
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                return encoding.GetString(thebyteList.ToArray());
+            }
+            else
+                return "";
+        }
         public static string StringToUnicode(string srcText)
         {
             string dst = "";

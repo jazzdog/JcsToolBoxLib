@@ -51,7 +51,7 @@ namespace ToolBoxLib
         {
             try
             {
-                string strNowTime = CUtil.getCurrentDateTimeString("MM-dd hh:mm:ss:ffff");
+                string strNowTime = CUtil.getCurrentDateTimeString("MM-dd hh:mm:ss.ffffff");
                 string _fix_strBugMsg = CUtil.fixStringFormateError(strBugMsg);
 
                 if (args.Length > 0)
@@ -99,7 +99,7 @@ namespace ToolBoxLib
             String strInfo;
             StackTrace stack = new StackTrace(1, true); //●取得stackframe的階層(視架構可能需要改變)
             var sf = stack.GetFrame(0); //●取最遠的
-
+            string strNowTime = CUtil.getCurrentDateTimeString("MM-dd hh:mm:ss.ffffff");
             string strFile = sf.GetFileName();
             string strFunction = sf.GetMethod().ToString();
             int iLine = sf.GetFileLineNumber();
@@ -107,12 +107,20 @@ namespace ToolBoxLib
             strInfo = strFile + "(" + iLine + ")" + ":[" + strFunction + "]"; //●可以連結回來的格式
             try
             {
-                Debug.Write(String.Format(strInfo + ">>\n" + strBugMsg + "\n", args));
+                Debug.Write(String.Format(strInfo + ">>\n" + "[" + strNowTime + "]"+strBugMsg + "\n", args));
             }
             catch //(Exception e)
             {
-                strBugMsg = CUtil.fixStringFormateError(strBugMsg);
-                Debug.Write(String.Format(strInfo + ">>\n" + strBugMsg + "\n", args));
+                /*System.FormatException: 輸入字串格式不正確。
+                 * 因為輸入JSON 包含{} 造成arg以為是參數序號{0},{1},...=>輸入字串格式不正確
+                 */
+
+                string _fix_strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+                _fix_strBugMsg = _fix_strBugMsg.Replace("{", "{{"); //如果要列印過複雜的字串將引號去除
+                _fix_strBugMsg = _fix_strBugMsg.Replace("}", "}}"); //如果要列印過複雜的字串將引號去除
+
+                //strBugMsg = CUtil.fixStringFormateError(strBugMsg);
+                Debug.Write(String.Format(strInfo + ">>\n" + _fix_strBugMsg + "\n", args));
             }
         }
 
