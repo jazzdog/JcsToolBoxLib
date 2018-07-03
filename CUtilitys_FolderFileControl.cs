@@ -20,7 +20,28 @@ namespace ToolBoxLib
 
     public static partial class CUtil
     {
-        
+
+        public static bool saveFile(string strFolderPath, string strFileName,byte[] btArray)
+        {
+            isFolderExist(strFolderPath, true);
+            string strFileFullPath= strFolderPath+ strFileName;
+            File.WriteAllBytes(strFileFullPath, btArray); // Requires System.IO
+            return isFile(strFileFullPath);
+        }
+
+        public static bool saveFile(string strFolderPath, string strFileName, string strB64)
+        {
+            string incoming = strB64.Replace('_', '/').Replace('-', '+');
+            switch (strB64.Length % 4)
+            {
+                case 2: incoming += "=="; break;
+                case 3: incoming += "="; break;
+            }
+
+            byte[] data = Convert.FromBase64String(incoming);
+            return saveFile(strFolderPath, strFileName, data);
+        }
+
         public static bool checkDirectory(string strFolderPath,bool blCreateDirectory=true)
         {
             if (!Directory.Exists(strFolderPath))
