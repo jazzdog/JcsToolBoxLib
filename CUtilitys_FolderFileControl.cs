@@ -29,7 +29,28 @@ namespace ToolBoxLib
             return isFile(strFileFullPath);
         }
 
-        public static bool saveFile(string strFolderPath, string strFileName, string strB64)
+        public static string convertFileToB64String(string strFileFullPath)
+        {
+            if (isFile(strFileFullPath) == true)
+            {
+                var fileStream = new FileStream(strFileFullPath, FileMode.Open, FileAccess.Read);
+                byte[] fileBuffer = new byte[fileStream.Length];
+                return convertBinaryArrayToB64String(fileBuffer);
+            }
+            else
+            {
+                return "";
+            }
+
+        }
+
+        public static string convertBinaryArrayToB64String(byte[] theData)
+        {
+            string strDataBase64 = Convert.ToBase64String(theData);
+            return strDataBase64; //for debug breakpoint 
+
+        }
+        public static bool convertB64StringToBinaryArray(string strB64,out byte[] theData)
         {
             string incoming = strB64.Replace('_', '/').Replace('-', '+');
             switch (strB64.Length % 4)
@@ -38,8 +59,23 @@ namespace ToolBoxLib
                 case 3: incoming += "="; break;
             }
 
-            byte[] data = Convert.FromBase64String(incoming);
-            return saveFile(strFolderPath, strFileName, data);
+            theData = Convert.FromBase64String(incoming);
+
+            if (theData?.Length > 0)
+                return true;
+            else
+                return false;
+
+        }
+
+        public static bool saveFile(string strFolderPath, string strFileName, string strB64)
+        {
+
+            byte[] data;
+            if (convertB64StringToBinaryArray(strB64, out data))
+                return saveFile(strFolderPath, strFileName, data);
+            else
+                return false;
         }
 
         public static bool checkDirectory(string strFolderPath,bool blCreateDirectory=true)
