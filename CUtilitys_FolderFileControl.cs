@@ -29,13 +29,32 @@ namespace ToolBoxLib
             return isFile(strFileFullPath);
         }
 
-        public static string convertFileToB64String(string strFileFullPath)
+        public static bool convertFileToByteArray(string strFileFullPath, out byte[] btBuffer)
         {
             if (isFile(strFileFullPath) == true)
             {
                 var fileStream = new FileStream(strFileFullPath, FileMode.Open, FileAccess.Read);
-                byte[] fileBuffer = new byte[fileStream.Length];
-                return convertBinaryArrayToB64String(fileBuffer);
+                btBuffer = new byte[fileStream.Length];
+                fileStream.Read(btBuffer, 0, btBuffer.Length);
+                return true;
+            }
+            else
+            {
+                btBuffer = null;
+                return false;
+            }
+        
+        }
+
+        public static string convertFileToB64String(string strFileFullPath)
+        {
+            if (isFile(strFileFullPath) == true)
+            {
+                byte[] fileBuffer;
+                if (convertFileToByteArray(strFileFullPath, out fileBuffer) == true)
+                    return convertBinaryArrayToB64String(fileBuffer);
+                else
+                    return "";
             }
             else
             {
