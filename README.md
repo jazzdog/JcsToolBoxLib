@@ -10,21 +10,51 @@
 ---
 ## 目錄
 
-1. [CDbgUtil.cs](#CDbgUtil)
-    * [jmsg()](#CDbgUtil_1)
-    * [jmsgt()](#CDbgUtil_2)
-    * [dInfo()](#CDbgUtil_3)
-
-
+1. [CDbgUtil.cs](#CDbgUtil "除錯專用")
+    * [jmsg](#CDbgUtil_1)
+    * [jmsgt](#CDbgUtil_2)
+    * [jmsgEx](#CDbgUtil_3)
+    * [dInfo](#CDbgUtil_4)
+    * [getDebugLink](#CDbgUtil_5)
+2. [CProcEventTask.cs](#CProcEventTask "處理事件列表")
+3. [CUtility.cs](#CUtility "常用<未分類>的工具")
+4. [CUtilitys_ColorConvert.cs](#CUtilitys_ColorConvert "色彩的工具")
+5. [CUtility_DispatcherTimer.cs](#CUtility_DispatcherTimer "定/計時功能")
 
 ---
  [top](#top)
 >## <div id="CDbgUtil"/>CDbgUtil.cs
+>除錯專用，產生訊息
 
 * <div id="CDbgUtil_1"/> void jmsg(String strBugMsg, params Object[] args)
 * <div id="CDbgUtil_2"/> void jmsgt(String strBugMsg, params Object[] args)
-* <div id="CDbgUtil_3"/>dinfo dInfo(int nSkeepLevel=1)
+* <div id="CDbgUtil_3"/> void jmsgEx(String strBugMsg, params Object[] args)
+* <div id="CDbgUtil_4"/> dinfo dInfo(int nSkeepLevel=1)
+* <div id="CDbgUtil_5"/> string getDebugLink(int nFrameLayer)
+
+ [top](#top)
+>## <div id="CProcEventTask"/>CProcEventTask.cs
+>處理事件列表，使用**InvokeDelegat**來處理事件代碼相對應建立的處理函式。(目前設定儲存最多100個事件)
+
+ [top](#top)
+>## <div id="CUtility"/>CUtility.cs
+>常用<未分類>的工具
 
 
+ [top](#top)
+>## <div id="CUtility"/>CUtility.cs
+>常用<未分類>的工具
+
+
+
+ [top](#top)
+>## <div id="CUtilitys_ColorConvert"/>CUtilitys_ColorConvert.cs
+>色彩相關工具
+
+
+
+ [top](#top)
+>## <div id="CUtility_DispatcherTimer"/>CUtility_DispatcherTimer.cs
+>定/計時功能
 
 
