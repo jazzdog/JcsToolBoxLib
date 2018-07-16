@@ -1,7 +1,12 @@
-#幫助開發C#時許多方便功能函式以加速開發以及除錯!
+# JcsToolBoxLib
 
-A. CDbgUtil.cs
-  1. CDebug.jmsg("connect IP: {0}", clientIP);
-    - 以debug message列印出格式化的訊息
-  2. CDebug.jmsgEx("connect IP: {0}", clientIP);
-      - 以debug message列印出格式化的訊息 針對VS環境可於output視窗產生可連回程式代碼之連結。
+
+* 前言
+
+>須多功能在開發過程中會一再的重複使用，因此建立一個自己的類別來使用，以後開發過程，甚至找飯粒...範例都具有很高的參考價值。
+
+* 歷史
+>Branch:master之後因為 popupElement.cs需要windwos，因此在2018/03/14之後開了另一個branch:noWindowVersion，之後以此版為主要維護
+
+
+
