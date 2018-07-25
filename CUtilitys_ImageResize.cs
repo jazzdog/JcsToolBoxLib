@@ -19,8 +19,94 @@ using System.IO;
 
 namespace ToolBoxLib
 {
+
+    
+
     public static partial class CUtil
     {
+
+        public static bool isvalidRectangle(Rectangle rectTest,int nMinWH=-1)
+        {
+            if (rectTest.Width < nMinWH || rectTest.Height < nMinWH)
+                return false;
+            else
+                return true;
+        }
+
+        public static Bitmap cutImage(string strB64Image, Rectangle recCutPoints)
+        {
+            byte[] btAryImage;
+            convertB64StringToBinaryArray(strB64Image, out btAryImage);
+            return cutImage(btAryImage, recCutPoints);
+        }
+
+        public static Bitmap cutImage(byte[] btaryImage, Rectangle recCutPoints)
+        {
+            Image _image = convertByteArrayToImage(btaryImage);
+            return cutImage(_image,  recCutPoints);
+        }
+
+        public static Rectangle fixRectangleofImage(Image img, Rectangle recCutPoints)
+        {
+            int nImage_W = img.Width;
+            int nImage_H = img.Height;
+            if (recCutPoints.X < 0)
+                recCutPoints.X = 0;
+            if (recCutPoints.Y < 0)
+                recCutPoints.Y = 0;
+            if ((recCutPoints.X + recCutPoints.Width) > nImage_W)
+                recCutPoints.Width =  (nImage_W - recCutPoints.X);
+            if ((recCutPoints.Y + recCutPoints.Height) > nImage_H)
+                recCutPoints.Height = (nImage_H - recCutPoints.Y);
+
+            return recCutPoints;
+        }
+
+        public static Bitmap cutImage(Image img, Rectangle recCutPoints)
+        {
+            Rectangle _RecFixed = fixRectangleofImage(img,  recCutPoints);
+            if ( (img != null)&&(isvalidRectangle(_RecFixed, 1)))
+            {
+
+
+                Bitmap outbitmap = new Bitmap(_RecFixed.Width, _RecFixed.Height);
+                Graphics g = Graphics.FromImage(outbitmap);
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.Clear(System.Drawing.Color.Transparent);
+                g.DrawImage(img, new Rectangle(0, 0, _RecFixed.Width, _RecFixed.Height), _RecFixed, GraphicsUnit.Pixel);
+                return outbitmap;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        public static byte[] convertImagetoByteArray(Image theImage)
+        {
+            if (theImage != null)
+            {
+                ImageConverter _imageConverter = new ImageConverter();
+                byte[] theArray = (byte[])_imageConverter.ConvertTo(theImage, typeof(byte[]));
+                return theArray;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        public static Image convertByteArrayToImage(byte[] btaryImage)
+        {
+            using (var ms = new MemoryStream(btaryImage))
+            {
+                return Image.FromStream(ms);
+            }
+        }
+                                   
         public static MemoryStream BitmapStreamResize(MemoryStream IntputStream, double Scale)
         {
             if (IntputStream != null && Scale > 0)
