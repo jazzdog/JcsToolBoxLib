@@ -21,10 +21,10 @@ namespace ToolBoxLib
     public static partial class CUtil
     {
 
-        public static bool saveFile(string strFolderPath, string strFileName,byte[] btArray)
+        public static bool saveFile(string strFolderPath, string strFileName, byte[] btArray)
         {
             isFolderExist(strFolderPath, true);
-            string strFileFullPath= strFolderPath+ strFileName;
+            string strFileFullPath = strFolderPath + strFileName;
             File.WriteAllBytes(strFileFullPath, btArray); // Requires System.IO
             return isFile(strFileFullPath);
         }
@@ -43,7 +43,7 @@ namespace ToolBoxLib
                 btBuffer = null;
                 return false;
             }
-        
+
         }
 
         public static string convertFileToB64String(string strFileFullPath)
@@ -61,6 +61,42 @@ namespace ToolBoxLib
                 return "";
             }
 
+        }
+
+        public static bool copyArray<T>(T[] sourceArray, out T[] outputArray, int nCopyLength = -1)
+        {
+            try
+            {
+                if (nCopyLength < 0)
+                    nCopyLength = sourceArray.Length;
+                outputArray = resetArray<T>(nCopyLength, true);
+                Array.Copy(sourceArray, outputArray, nCopyLength);
+                return true;
+            }
+            catch (Exception eee)
+            {
+                outputArray = null;
+                return false;
+            }
+        }
+
+
+        public static T[] resetArray<T>(int nSize, bool blClear = false)
+        {
+            try
+            {
+                T[] _array = new T[1];
+                Array.Resize<T>(ref _array, nSize);
+                if(blClear==true)
+                    Array.Clear(_array, 0, _array.Length);
+                return _array;
+            }
+            catch (Exception eee)
+            {
+                return null;
+            }
+
+            
         }
 
         public static string convertBinaryArrayToB64String(byte[] theData)

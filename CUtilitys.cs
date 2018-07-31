@@ -59,6 +59,8 @@ namespace ToolBoxLib
             }
         }
 
+       
+
         public static bool IsNumeric(string strNumber)
         {
             try
