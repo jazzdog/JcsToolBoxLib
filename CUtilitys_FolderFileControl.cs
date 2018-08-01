@@ -63,6 +63,38 @@ namespace ToolBoxLib
 
         }
 
+        public static bool copyList<T>(List<T> sourceList, out List<T> outList)
+        {
+            try
+            {
+                outList = new List<T>(sourceList);
+                return true;
+            }
+            catch
+            {
+                outList = null;
+                return false;
+            }
+        }
+
+        public static bool copyDictionary<TKey, TValue>(Dictionary<TKey, TValue> sourceDic, out Dictionary<TKey, TValue> outDic)
+        {
+            try
+            {
+                outDic = new Dictionary<TKey, TValue>();
+                foreach (KeyValuePair<TKey, TValue> _pair in sourceDic)
+                {
+                    outDic.Add(_pair.Key, _pair.Value);
+                }
+                return true;
+            }
+            catch
+            {
+                outDic = null;
+                return false;
+            }
+        }
+
         public static bool copyArray<T>(T[] sourceArray, out T[] outputArray, int nCopyLength = -1)
         {
             try
