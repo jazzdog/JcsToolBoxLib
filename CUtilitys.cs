@@ -102,10 +102,22 @@ namespace ToolBoxLib
         {
             string strFixed = strErroFormat;
             strFixed = strFixed.Replace(System.Environment.NewLine, string.Empty);
+           
             strFixed = strFixed.Trim();
             //strFixed = strFixed.Replace("{", "{{");
             //strFixed = strFixed.Replace("}", "}}");
             return strFixed;
+        }
+
+        public static string byteArryToString(byte[] btyArr)
+        {
+            if (btyArr?.Length > 0)
+            {
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                return encoding.GetString(btyArr);
+            }
+            else
+                return "";
         }
 
         public static string bytelistToString(List<byte> thebyteList)

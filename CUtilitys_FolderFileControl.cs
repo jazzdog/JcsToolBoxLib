@@ -12,6 +12,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using System.Web.Script.Serialization;
 
 
 namespace ToolBoxLib
@@ -137,6 +138,23 @@ namespace ToolBoxLib
             return strDataBase64; //for debug breakpoint 
 
         }
+
+        public static string convertClassToJSONString(Object theClass)
+        {
+            var theJ = new JavaScriptSerializer();
+            theJ.MaxJsonLength = 2147483647;
+            string strJSONString = theJ.Serialize(theClass);
+            return strJSONString;
+        }
+
+        public static string convertDictionaryToJSONString<T1, T2>(Dictionary<T1, T2> dict)
+        {
+            var entries = dict.Select(d =>
+                string.Format("\"{0}\": {1}", d.Key, string.Join(",", d.Value)));
+            return "{" + string.Join(",", entries) + "}";
+        }
+
+
         public static bool convertB64StringToBinaryArray(string strB64,out byte[] theData)
         {
             string incoming = strB64.Replace('_', '/').Replace('-', '+');
