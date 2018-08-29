@@ -106,7 +106,24 @@ namespace ToolBoxLib
                 return Image.FromStream(ms);
             }
         }
-                                   
+
+
+        public static Image resizeImage_fromPICBase64String(string strPICBase64, double theScale)
+        {
+            byte[] bytImg;
+            convertB64StringToBinaryArray(strPICBase64, out bytImg);
+            Image theImg = CUtil.convertByteArrayToImage(bytImg);
+            MemoryStream memsRawImage = BitmapStreamResize((Bitmap)theImg, theScale);
+            return convertByteArrayToImage(memsRawImage.ToArray());
+        }
+
+        public static String resizeImage_fromPICBase64StringToBase64(string strPICBase64, double theScale)
+        {
+            Image theResizedImg = resizeImage_fromPICBase64String( strPICBase64,  theScale);
+            byte[] bytImg = convertImagetoByteArray(theResizedImg);
+            return convertBinaryArrayToB64String(bytImg);
+        }
+
         public static MemoryStream BitmapStreamResize(MemoryStream IntputStream, double Scale)
         {
             if (IntputStream != null && Scale > 0)
