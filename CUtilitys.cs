@@ -120,6 +120,18 @@ namespace ToolBoxLib
                 return "";
         }
 
+        public static string getStringBefore(string strInput, string strMark)
+        {
+            int nMark = strInput.IndexOf(strMark, 0);
+            return strInput.Substring(0,(nMark));
+        }
+
+        public static string getStringAfter(string strInput, string strMark)
+        {
+            int nMark = strInput.IndexOf(strMark, 0);
+            return strInput.Substring(nMark + strMark.Length);
+        }
+
         public static string bytelistToString(List<byte> thebyteList)
         {
             if (thebyteList?.Count > 0)
