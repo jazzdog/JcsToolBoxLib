@@ -83,17 +83,29 @@ namespace ToolBoxLib
 
         private static string makeDaliyLogFileName(string strTheFilePath,string strFileName)
         {
-            string strMac = getMacAddr()[0];
-            if(isStringValid(strTheFilePath, 1) == false)
-                strTheFilePath = System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
-            string strFullFilePath = "";
-            if (isStringValid(strFileName, 1) == false)
-                strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}.log", strTheFilePath,
-                                               DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, strMac);
-            else
-                strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}.log", strTheFilePath,
-                                                   DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, strFileName, strMac);
-            return strFullFilePath;
+            try
+            {
+                List<string> theMacs = getMacAddr();
+                string strMac="unknowMac";
+                if (theMacs.Count>0)
+                    strMac = theMacs[0];
+                if (isStringValid(strTheFilePath, 1) == false)
+                    strTheFilePath = System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
+                string strFullFilePath = "";
+                if (isStringValid(strFileName, 1) == false)
+                    strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}.log", strTheFilePath,
+                                                   DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, strMac);
+                else
+                    strFullFilePath = string.Format("{0}\\[{1:0000}_{2:00}_{3:00}]{4}_{5}.log", strTheFilePath,
+                                                       DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, strFileName, strMac);
+                return strFullFilePath;
+            }
+            catch(Exception eee)
+            {
+                string strEee = eee.ToString();
+                return null;
+
+            }
         }
 
         public static bool jlog( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
