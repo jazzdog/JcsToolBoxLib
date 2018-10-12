@@ -107,8 +107,63 @@ namespace ToolBoxLib
 
             }
         }
+        private static Object LOCKJLOG = new Object();
+        public static bool jlog(string strAbsFilePath, string strLogName, string log_string, params Object[] args)
+        {
+            string strFullFilePath = makeDaliyLogFileName(strAbsFilePath, strLogName);
+            string strMsg2Log;
+            if (args.Length <= 0)
+                strMsg2Log = log_string;
+            else
+                strMsg2Log = string.Format(log_string, args);
 
-        public static bool jlog( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
+            //if (!Directory.Exists(strAbsFilePath))
+            //    Directory.CreateDirectory(strAbsFilePath);
+
+            isFolderExist(strAbsFilePath, true);
+
+            try
+            {
+               
+
+                
+                bool blRes = false;
+                bool blFileLock = true;
+                lock (LOCKJLOG)
+                {
+                    
+                    while (blFileLock == true)
+                    {
+                        using (StreamWriter stmwLog = new StreamWriter(strFullFilePath, true))
+                        {
+                            if (stmwLog == null)
+                            {
+                                SpinWait.SpinUntil(() => false, 1);
+                                Debug.Write($"[jlog]wait...{strMsg2Log}\r\n");
+                                continue;
+                            }
+                            else
+                            {
+                                stmwLog.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss.ffffff") + "]> " + strMsg2Log);
+                                // stmwLog.Flush();
+                                //stmwLog.Close();
+                                //Debug.Write($"[jlog]OK...{strMsg2Log}\r\n");
+                                blRes = true;
+                                blFileLock = false;
+                            }
+                        }
+                    }
+                }
+                
+                return blRes;
+            }
+            catch (System.Exception eee)
+            {
+                return false;
+            }
+        }
+
+        public static bool jlog2( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
         {
             string strFullFilePath = makeDaliyLogFileName(strAbsFilePath, strLogName);
            
@@ -123,15 +178,36 @@ namespace ToolBoxLib
 
                 if (!Directory.Exists(strAbsFilePath))
                     Directory.CreateDirectory(strAbsFilePath);
-                //stmwLog = new StreamWriter(strFullFilePath, true);
+                
                 int nRetry = 0;
+
+
                 //while (stmwLog==null && nRetry<10000)
-                while (stmwLog == null)
+                bool blFileLock = true;
+                while (blFileLock == true)
                 {
                     SpinWait.SpinUntil(() => false, 1);
-                    stmwLog = new StreamWriter(strFullFilePath, true);
-                    nRetry++;
+                    try
+                    {
+                        using (File.Open(strFullFilePath, FileMode.Open, FileAccess.Write, FileShare.None))
+                        {
+                            blFileLock = false;
+                            
+                        }
+                    }
+                    catch
+                    {
+                        blFileLock = true;
+                    }
                 }
+
+                //while (stmwLog == null)
+                //{
+                //    SpinWait.SpinUntil(() => false, 1);
+                //    stmwLog = new StreamWriter(strFullFilePath, true);
+                //    nRetry++;
+                //}
+                stmwLog = new StreamWriter(strFullFilePath, true);
 
                 bool blRes = false;
                 if (stmwLog != null)
@@ -144,10 +220,11 @@ namespace ToolBoxLib
                 }
                 else
                     blRes= false;
-
+                if (blRes == false)
+                    blRes = false;
                 return blRes;
             }
-            catch (System.Exception)
+            catch (System.Exception eee)
             {
                 if (stmwLog != null)
                 {

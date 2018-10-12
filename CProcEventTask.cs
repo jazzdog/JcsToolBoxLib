@@ -135,7 +135,7 @@ namespace ToolBoxLib
         private List<Thread> listProcThread = new List<Thread>();
         private Dictionary<UInt32, InvokeDelegate> listProcFuncitons = new Dictionary<UInt32, InvokeDelegate>();
         private volatile bool m_stop = true;
-        private int nMaxEvenCont = 100;
+        private int nMaxEvenCont = 1000;
         private Thread thMonitlistEventDataFull;
         private Thread thprocEventLoop;
 
@@ -202,7 +202,7 @@ namespace ToolBoxLib
 
         private void MonitlistEventDataFull()
         {
-             while (m_stop== false)
+            while (m_stop== false)
             {
                 SpinWait.SpinUntil(() => (m_stop==true)||(listEventData.Count >= nMaxEvenCont), -1);
                 if (m_stop == true)
@@ -235,7 +235,7 @@ namespace ToolBoxLib
                         if (_cTaskInof == null)
                             continue;
                     
-                        Monitor.Enter(listEventData);
+                        Monitor.Exit(listEventData);
 
                         InvokeDelegate fnProcThis;
                     
