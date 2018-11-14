@@ -59,7 +59,14 @@ namespace ToolBoxLib
             }
         }
 
-       
+        public static string getLimitStr(string strLongMessageString, int nMaxCount = 10)
+        {
+            int nStringLength = strLongMessageString.Length;
+            if (nMaxCount > nStringLength)
+                return strLongMessageString;
+            else
+                return strLongMessageString.Substring(0, nMaxCount);
+        }
 
         public static bool IsNumeric(string strNumber)
         {

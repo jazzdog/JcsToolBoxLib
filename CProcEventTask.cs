@@ -94,6 +94,8 @@ namespace ToolBoxLib
         /// listEventByteData.Add(theBinaryData);
         /// </summary>
         public List<byte[]> listEventByteData = new List<byte[]>();
+
+        public List<object> listEventObject = new List<Object>();
         /// <summary>
         /// 自動填入目前時間，亦可修改
         /// </summary>
@@ -118,6 +120,8 @@ namespace ToolBoxLib
         {
             nEventCode = _nEventCode;
             nEventSubCode = _nEventSubCode;
+            listEventObject = new List<object>();
+            listEventByteData = new List<byte[]>();
         }
     }
 

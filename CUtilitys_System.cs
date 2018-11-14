@@ -163,6 +163,31 @@ namespace ToolBoxLib
             }
         }
 
+        public static string downloadDatabyURL(string url)
+        {
+            using (WebClient client = new WebClient())
+            {
+                /*
+                client.Headers["User-Agent"] =
+                    "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) " +
+                    "(compatible; MSIE 6.0; Windows NT 5.1; " +
+                    ".NET CLR 1.1.4322; .NET CLR 2.0.50727)";
+                */
+                // Download data.
+                try
+                {
+                    byte[] arr = client.DownloadData(url);
+                    return convertBinaryArrayToB64String(arr);
+                }
+                catch (Exception eee)
+                {
+                    return "";
+                }
+            }
+
+            return "";
+        }
+
         public static bool jlog2( string strAbsFilePath, string strLogName, string log_string, params Object[] args)
         {
             string strFullFilePath = makeDaliyLogFileName(strAbsFilePath, strLogName);
