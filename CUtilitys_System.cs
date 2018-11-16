@@ -371,8 +371,18 @@ namespace ToolBoxLib
             else
             {
                 DateTimeFormatInfo dtFormat = new System.Globalization.DateTimeFormatInfo();
-                dtFormat.ShortDatePattern = strDateTimeFormate;
-                return Convert.ToDateTime(strDateTime, dtFormat);
+                dtFormat.FullDateTimePattern = strDateTimeFormate;
+                //dtFormat.ShortDatePattern = strDateTimeFormate;
+
+                try
+                {
+                    return DateTime.ParseExact(strDateTime, strDateTimeFormate, CultureInfo.InvariantCulture);
+                    //return Convert.ToDateTime(strDateTime, dtFormat);
+                }
+                catch (Exception eee)
+                {
+                    return new DateTime(0);
+                }
             }
         }
 
@@ -471,7 +481,7 @@ namespace ToolBoxLib
             return strDayOnly;
         }
 
-        public static double getDateTimeinSec(string strDateTime="", string strDateTimeFormate = "yyyy/MM/dd HH:mm")
+        public static double getDateTimeinMillisec(string strDateTime="", string strDateTimeFormate = "yyyy/MM/dd HH:mm")
         {
             DateTime theDateTime;
             //if (isStringValid(strDateTime, 8) == true)
@@ -479,11 +489,12 @@ namespace ToolBoxLib
                 theDateTime = convertStringToDateTime(strDateTime, strDateTimeFormate);
             else
                 theDateTime = DateTime.Now;
-            double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+            //double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+            double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds;
             return theTime;
         }
 
-        public static double getDateTimeinSec(DateTime theDt)
+        public static double getDateTimeinMillisec(DateTime theDt)
         {
             DateTime theDateTime;
             //if (isStringValid(strDateTime, 8) == true)
@@ -491,8 +502,16 @@ namespace ToolBoxLib
                 theDateTime = theDt;
             else
                 theDateTime = DateTime.Now;
-            double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+            double theTime =(double)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds;
             return theTime;
+        }
+
+        public static DateTime convertMillisec2DateTime(double dbDatetimeInMillisec)
+        {
+            DateTime dt0 = new DateTime(1970, 1, 1);
+            DateTime dtfommls = dt0.AddMilliseconds(dbDatetimeInMillisec);
+
+            return dtfommls.ToLocalTime();
         }
 
         public static DateTime convertSec2DateTime(double dbDatetimeInSec)
