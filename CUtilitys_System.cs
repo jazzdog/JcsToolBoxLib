@@ -381,7 +381,7 @@ namespace ToolBoxLib
                 }
                 catch (Exception eee)
                 {
-                    return new DateTime(0);
+                    return Convert.ToDateTime(strDateTime);
                 }
             }
         }

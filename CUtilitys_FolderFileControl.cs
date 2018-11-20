@@ -64,6 +64,15 @@ namespace ToolBoxLib
 
         }
 
+        public static void clearConcurrentBag<T>(ConcurrentBag<T> theconBag)
+        {
+            while (theconBag.Count > 0)
+            {
+                T element;
+                theconBag.TryTake(out element);
+            }
+        }
+
         public static bool copyList<T>(List<T> sourceList, out List<T> outList)
         {
             try
@@ -76,6 +85,12 @@ namespace ToolBoxLib
                 outList = null;
                 return false;
             }
+        }
+        public static void clearList<listType>(List<listType> theListToClear)
+        {
+            theListToClear.Clear();
+            theListToClear.Capacity = 0;
+            theListToClear.TrimExcess();
         }
 
         public static bool copyDictionary<TKey, TValue>(Dictionary<TKey, TValue> sourceDic, out Dictionary<TKey, TValue> outDic)
@@ -153,7 +168,12 @@ namespace ToolBoxLib
                 string.Format("\"{0}\": {1}", d.Key, string.Join(",", d.Value)));
             return "{" + string.Join(",", entries) + "}";
         }
-
+        public static System.Drawing.Image covnertB64String2Image(string strB64Image)
+        {
+            byte[] theImagebyte;
+            convertB64StringToBinaryArray(strB64Image, out theImagebyte);
+            return convertByteArrayToImage(theImagebyte);
+        }
 
         public static bool convertB64StringToBinaryArray(string strB64,out byte[] theData)
         {
