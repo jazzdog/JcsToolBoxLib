@@ -20,12 +20,12 @@ using System.IO;
 namespace ToolBoxLib
 {
 
-    
+
 
     public static partial class CUtil
     {
 
-        public static bool isvalidRectangle(Rectangle rectTest,int nMinWH=-1)
+        public static bool isvalidRectangle(Rectangle rectTest, int nMinWH = -1)
         {
             if (rectTest.Width < nMinWH || rectTest.Height < nMinWH)
                 return false;
@@ -43,7 +43,7 @@ namespace ToolBoxLib
         public static Bitmap cutImage(byte[] btaryImage, Rectangle recCutPoints)
         {
             Image _image = convertByteArrayToImage(btaryImage);
-            return cutImage(_image,  recCutPoints);
+            return cutImage(_image, recCutPoints);
         }
 
         public static Rectangle fixRectangleofImage(Image img, Rectangle recCutPoints)
@@ -55,7 +55,7 @@ namespace ToolBoxLib
             if (recCutPoints.Y < 0)
                 recCutPoints.Y = 0;
             if ((recCutPoints.X + recCutPoints.Width) > nImage_W)
-                recCutPoints.Width =  (nImage_W - recCutPoints.X);
+                recCutPoints.Width = (nImage_W - recCutPoints.X);
             if ((recCutPoints.Y + recCutPoints.Height) > nImage_H)
                 recCutPoints.Height = (nImage_H - recCutPoints.Y);
 
@@ -64,8 +64,8 @@ namespace ToolBoxLib
 
         public static Bitmap cutImage(Image img, Rectangle recCutPoints)
         {
-            Rectangle _RecFixed = fixRectangleofImage(img,  recCutPoints);
-            if ( (img != null)&&(isvalidRectangle(_RecFixed, 1)))
+            Rectangle _RecFixed = fixRectangleofImage(img, recCutPoints);
+            if ((img != null) && (isvalidRectangle(_RecFixed, 1)))
             {
 
 
@@ -83,6 +83,12 @@ namespace ToolBoxLib
             }
         }
 
+        public static string convertImagetoB64String(Image theImage)
+        {
+            byte[] btimage;
+            btimage = convertImagetoByteArray(theImage);
+            return convertBinaryArrayToB64String(btimage);
+        }
 
         public static byte[] convertImagetoByteArray(Image theImage)
         {
@@ -97,6 +103,13 @@ namespace ToolBoxLib
                 return null;
             }
 
+        }
+
+        public static Image convertB64StringToImage(string b64string)
+        {
+            byte[] theImage;
+            convertB64StringToBinaryArray(b64string, out theImage);
+            return convertByteArrayToImage(theImage);
         }
 
         public static Image convertByteArrayToImage(byte[] btaryImage)

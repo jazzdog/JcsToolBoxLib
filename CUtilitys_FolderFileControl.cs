@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -177,20 +178,26 @@ namespace ToolBoxLib
 
         public static bool convertB64StringToBinaryArray(string strB64,out byte[] theData)
         {
-            string incoming = strB64.Replace('_', '/').Replace('-', '+');
-            switch (strB64.Length % 4)
+            string incoming = strB64?.Replace('_', '/').Replace('-', '+');
+            switch (strB64?.Length % 4)
             {
                 case 2: incoming += "=="; break;
                 case 3: incoming += "="; break;
             }
+            if (incoming != null)
+            {
+                theData = Convert.FromBase64String(incoming);
 
-            theData = Convert.FromBase64String(incoming);
-
-            if (theData?.Length > 0)
-                return true;
+                if (theData?.Length > 0)
+                    return true;
+                else
+                    return false;
+            }
             else
+            {
+                theData = null;
                 return false;
-
+            }
         }
 
         public static bool saveFile(string strFolderPath, string strFileName, string strB64)
