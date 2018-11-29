@@ -363,6 +363,11 @@ namespace ToolBoxLib
                 strDateTime = DateTime.Now.ToString(strDateTimeFormate);
             return strDateTime;
         }
+        public static string convertStringToB64String(string inString)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(inString);
+            return Convert.ToBase64String(bytes);
+        }
 
         public static DateTime convertStringToDateTime(string strDateTime,string strDateTimeFormate = "yyyy/MM/dd HH:mm")
         {

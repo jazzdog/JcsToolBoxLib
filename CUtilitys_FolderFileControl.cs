@@ -14,7 +14,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Web.Script.Serialization;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ToolBoxLib
 {
@@ -38,6 +39,8 @@ namespace ToolBoxLib
                 var fileStream = new FileStream(strFileFullPath, FileMode.Open, FileAccess.Read);
                 btBuffer = new byte[fileStream.Length];
                 fileStream.Read(btBuffer, 0, btBuffer.Length);
+                fileStream.Flush();
+                fileStream.Close();
                 return true;
             }
             else
@@ -110,6 +113,13 @@ namespace ToolBoxLib
                 outDic = null;
                 return false;
             }
+        }
+
+        public static void copyClass<T>(T sourceClassObject, out T copyClassObject)
+        {
+            string strCalssJSON = convertClassToJSONString(sourceClassObject);
+            copyClassObject = JsonConvert.DeserializeObject<T>(strCalssJSON);
+
         }
 
         public static bool copyArray<T>(T[] sourceArray, out T[] outputArray, int nCopyLength = -1)
@@ -199,8 +209,14 @@ namespace ToolBoxLib
                 return false;
             }
         }
-
-        public static bool saveFile(string strFolderPath, string strFileName, string strB64)
+        public static bool saveFile(string strFolderPath, string strFileName, string strText)
+        {
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(strText);
+            return saveFile(strFolderPath, strFileName, byteArray);
+          
+        }
+        
+        public static bool saveFileB64(string strFolderPath, string strFileName, string strB64)
         {
 
             byte[] data;

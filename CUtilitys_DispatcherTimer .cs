@@ -9,7 +9,8 @@ using ToolBoxLib;
 namespace ToolBoxLib
 {
 
-    /* Example:
+    /* ★★★★★only work on WPF or Silverlight ★★★★★★★★★★★★★
+     * Example:
      *   [Declare]
      *          DispatcherTimer _timeout = new DispatcherTimer("TimeoutName");
      *   [init]
