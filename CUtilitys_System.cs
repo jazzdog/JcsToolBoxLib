@@ -345,10 +345,24 @@ namespace ToolBoxLib
 
         }
 
+        public static int getProcessByName(string strProcessName, out System.Diagnostics.Process[] processList)
+        {
+            //只要名稱 不包含.exe
+            //ex: chrome
+            //  "chrome.exe"會找不到
+            processList = System.Diagnostics.Process.GetProcessesByName(strProcessName);
+            return processList.Length;
+        }
+
+        public static Process startProcess(string theExePath)
+        {
+            return Process.Start(theExePath);
+        }
 
         public static void closeProcess(string strProcessName)
         {
-            System.Diagnostics.Process[] MyProcess = System.Diagnostics.Process.GetProcessesByName(strProcessName);
+            System.Diagnostics.Process[] MyProcess;// = System.Diagnostics.Process.GetProcessesByName(strProcessName);
+            getProcessByName(strProcessName, out MyProcess);
             if (MyProcess.Length > 0)
                 MyProcess[0].Kill();
         }

@@ -21,14 +21,23 @@ namespace ToolBoxLib
     *    if time set less then 0, can't go start timer
     *    if there is no set any callback function , cant go start timer
     */
-    public delegate void InvokeTimerupEventproc();
+    public delegate void InvokeTimerupEventproc(); //the event callback
     public class cTimer : IDisposable
     {
 
         private  System.Timers.Timer _timer = null;
         private  Object LOCKTIMER = new Object();
-        private List<InvokeTimerupEventproc> listProcFuncitons = new List<InvokeTimerupEventproc>();
-        private bool m_blCounting { get { return _timer.Enabled; } }
+        private List<InvokeTimerupEventproc> listProcFuncitons = new List<InvokeTimerupEventproc>(); //function list called by timeup
+
+        private bool m_blCounting { get
+            {
+                if (_timer != null)
+                    return _timer.Enabled;
+                else
+                    return false;
+            } }
+
+        public bool runing { get { return m_blCounting; } } //check timer is running
 
         private  System.Timers.Timer m_timer
         {
@@ -55,27 +64,32 @@ namespace ToolBoxLib
                 return _timer;
             }
         }
+
+
         void _timeupEvent(object sender, System.Timers.ElapsedEventArgs e)
         {
-           
-                SpinWait.SpinUntil(() => listProcFuncitons.Count > 0 || m_blCounting == true, -1);
-                if (m_blCounting == false)
-                {
-                    return;
-                }
-                foreach (InvokeTimerupEventproc theproc in listProcFuncitons)
-                {
-                    Thread thProcEvent = new Thread(() => theproc());
-                    thProcEvent.SetApartmentState(ApartmentState.STA); //Set the thread to STA
-                    thProcEvent.Start();
-                }
+            //not runing or no register call back function dont work
+            SpinWait.SpinUntil(() => listProcFuncitons.Count > 0 || m_blCounting == true, -1);
+            if (m_blCounting == false)
+            {
+                return;
+            }
+            foreach (InvokeTimerupEventproc theproc in listProcFuncitons)
+            {
+                Thread thProcEvent = new Thread(() => theproc()); 
+                thProcEvent.SetApartmentState(ApartmentState.STA); //Set the thread to STA
+                thProcEvent.Start();
+            }
+            CUtil.clearMemory();
 
 
             
         }
 
+        
         bool checkBeforeStart()
         {
+            //count start if settings is incorrect
             if ((m_timer.Interval > 0) && (listProcFuncitons.Count > 0))
             {
                 return true;
@@ -86,25 +100,28 @@ namespace ToolBoxLib
             }
         }
 
-        public cTimer(double dbMillisecond = -1)
+        public cTimer(double dbMillisecond = 0)
         {
+            if(dbMillisecond>0)
             m_timer.Interval = dbMillisecond;
         }
 
-        public void start(double dbMillisecond=-1)
+        public void start(double dbMillisecond=0)
         {
             if (dbMillisecond > 0)
                 m_timer.Interval = dbMillisecond;
-
+            //if settings incorrect don't start
             if (checkBeforeStart() == false)
                 return;
+            //m_timer.AutoReset = true;
 
+            //stop before start for reset time duration
             m_timer.Stop();
             while (m_blCounting == true)
             {
                 SpinWait.SpinUntil(() => false, 100);
             }
-
+            CUtil.clearMemory();
 
             m_timer.Start();
 
@@ -117,6 +134,7 @@ namespace ToolBoxLib
             {
                 SpinWait.SpinUntil(() => false, 100);
             }
+            CUtil.clearMemory();
             return m_blCounting;
         }
 

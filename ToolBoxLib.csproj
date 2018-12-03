@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\AVC_MemberManager\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\CS_Form_WatchDog\CS_Form_WatchDog\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -91,7 +91,7 @@
   <ItemGroup>
     <Compile Include="CDbgUtil.cs" />
     <Compile Include="CProcEventTask.cs" />
-    <Compile Include="cTimer.cs" />
+    <Compile Include="CUtlitys_Timer.cs" />
     <Compile Include="CUtilitys.cs" />
     <Compile Include="CUtilitys_ColorConvert.cs" />
     <Compile Include="CUtilitys_DispatcherTimer .cs" />
@@ -100,6 +100,7 @@
     <Compile Include="CUtilitys_NativeMethods.cs" />
     <Compile Include="CUtilitys_System.cs" />
     <Compile Include="CUtilitys_SystemHook.cs" />
+    <Compile Include="CUtilitys_WatchDog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
