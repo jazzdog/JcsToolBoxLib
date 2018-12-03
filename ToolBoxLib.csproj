@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="CDbgUtil.cs" />
     <Compile Include="CProcEventTask.cs" />
+    <Compile Include="cTimer.cs" />
     <Compile Include="CUtilitys.cs" />
     <Compile Include="CUtilitys_ColorConvert.cs" />
     <Compile Include="CUtilitys_DispatcherTimer .cs" />

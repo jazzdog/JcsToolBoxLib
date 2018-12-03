@@ -25,16 +25,15 @@ namespace ToolBoxLib
                 public enum eEcode
                 {
                     DEF_NONE=0,
-                    EVENT_CALL,
-                    EVENT_REPLY,
-                    SYS_ERR,
+                    EVENT_SYS,
+                    EVENT_SYS_ERR,
                 }
                 /// 事件子代碼
                 public enum eSubEcode
                 {
                     _DEF_NONE = 0,
-                    _ERR,
-                    EVENT_CALL_GET_NAMELIST,
+                    _EVENT_SYS_WHAT_HAPPENT,
+                    _EVENT_SYS_ERR_SOMETHING_WRONE,
                 }
             [Init]
                 void initRegEventProc() //建立事件代碼對應表
