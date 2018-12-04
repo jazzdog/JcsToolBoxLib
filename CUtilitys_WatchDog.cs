@@ -134,12 +134,14 @@ namespace ToolBoxLib
             {
                 Process[] theProcList;
                 int nCount = CUtil.getProcessByName(m_ProcName_processMutilple, out theProcList);
-                if (nCount > 1)
+                while (nCount > 1)
                 {
                     info.addCount_Mutilple();
                     if (eventCallback_Multiple != null)
                         eventCallback_Multiple();
                     CUtil.closeProcess(m_ProcName_processMutilple);
+                    SpinWait.SpinUntil(() => false, 500);
+                    nCount = CUtil.getProcessByName(m_ProcName_processMutilple, out theProcList);
                 }
             }
         }
