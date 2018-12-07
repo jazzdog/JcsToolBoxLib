@@ -500,6 +500,7 @@ namespace ToolBoxLib
             return strDayOnly;
         }
 
+
         public static double getDateTimeinMillisec(string strDateTime="", string strDateTimeFormate = "yyyy/MM/dd HH:mm")
         {
             DateTime theDateTime;
@@ -511,6 +512,14 @@ namespace ToolBoxLib
             //double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
             double theTime = (int)(theDateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds;
             return theTime;
+        }
+        public static double getDateTimeinSec(string strDateTime = "", string strDateTimeFormate = "yyyy/MM/dd HH:mm")
+        {
+            return getDateTimeinMillisec(strDateTime, strDateTimeFormate) / 1000.0;
+        }
+        public static double getDateTimeinSec(DateTime theDt)
+        { 
+            return  getDateTimeinMillisec(theDt) / 1000.0;
         }
 
         public static double getDateTimeinMillisec(DateTime theDt)
