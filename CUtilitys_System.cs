@@ -39,6 +39,11 @@ namespace ToolBoxLib
             return m_strParentPath;
         }
 
+        public static void copyText(string strCopyText)
+        {
+            System.Windows.Forms.Clipboard.SetText(strCopyText);
+        }
+
         public static bool isFolderExist(string strPath, bool blCreate)
         {
             string strLocalPath = "";
