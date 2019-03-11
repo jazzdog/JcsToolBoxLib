@@ -94,9 +94,9 @@ namespace ToolBoxLib
         {
             if (theImage != null)
             {
-                ImageConverter _imageConverter = new ImageConverter();
-                byte[] theArray = (byte[])_imageConverter.ConvertTo(theImage, typeof(byte[]));
-                return theArray;
+                MemoryStream mstreamImage = BitmapStreamResize((System.Drawing.Bitmap)theImage, 1);
+                
+                return mstreamImage.ToArray();
             }
             else
             {
