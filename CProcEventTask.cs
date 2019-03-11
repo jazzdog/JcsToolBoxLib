@@ -138,7 +138,7 @@ namespace ToolBoxLib
         private List<Thread> listProcThread = new List<Thread>();
         private Dictionary<UInt32, InvokeDelegate> listProcFuncitons = new Dictionary<UInt32, InvokeDelegate>();
         private volatile bool m_stop = true;
-        private int nMaxEvenCont = 1000;
+        private int nMaxEvenCont = 5000;
         private Thread thMonitlistEventDataFull;
         private Thread thprocEventLoop;
 

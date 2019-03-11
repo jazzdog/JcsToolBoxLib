@@ -26,10 +26,17 @@ namespace ToolBoxLib
 
         public static bool saveFile(string strFolderPath, string strFileName, byte[] btArray)
         {
-            isFolderExist(strFolderPath, true);
-            string strFileFullPath = strFolderPath + strFileName;
-            File.WriteAllBytes(strFileFullPath, btArray); // Requires System.IO
-            return isFile(strFileFullPath);
+            try
+            {
+                isFolderExist(strFolderPath, true);
+                string strFileFullPath = strFolderPath + strFileName;
+                File.WriteAllBytes(strFileFullPath, btArray); // Requires System.IO
+                return isFile(strFileFullPath);
+            }
+            catch (Exception eee)
+            {
+                return false;
+            }
         }
 
         public static bool convertFileToByteArray(string strFileFullPath, out byte[] btBuffer)

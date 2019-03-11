@@ -53,8 +53,15 @@ namespace ToolBoxLib
             bool blExist = Directory.Exists(strLocalPath);
             if ((blCreate == true) && (blExist == false))
             {
-                Directory.CreateDirectory(strLocalPath);
-                return true;
+                try
+                {
+                    Directory.CreateDirectory(strLocalPath);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
 
             return blExist;
