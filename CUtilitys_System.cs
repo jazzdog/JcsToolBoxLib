@@ -35,8 +35,8 @@ namespace ToolBoxLib
 
         public static string getCurrentPath()
         {
-            //return System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
-            return m_strParentPath;
+            return System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
+            //return m_strParentPath;
         }
 
         public static void copyText(string strCopyText)
@@ -136,14 +136,11 @@ namespace ToolBoxLib
 
             try
             {
-               
 
-                
                 bool blRes = false;
                 bool blFileLock = true;
                 lock (LOCKJLOG)
                 {
-                    
                     while (blFileLock == true)
                     {
                         using (StreamWriter stmwLog = new StreamWriter(strFullFilePath, true))
