@@ -139,12 +139,25 @@ namespace ToolBoxLib
         public int eventLeftCount { get { return listEventData.Count; } private set { return; } }
 
         //private List<Thread> listProcThread = new List<Thread>();
-        private ConcurrentBag<Thread> listProcThread = new ConcurrentBag<Thread>();
+        //private ConcurrentBag<Thread> listProcThread = new ConcurrentBag<Thread>();
         private Dictionary<UInt32, InvokeDelegate> listProcFuncitons = new Dictionary<UInt32, InvokeDelegate>();
         private volatile bool m_stop = true;
-        private int nMaxEvenCont = 5000;
         private Thread thMonitlistEventDataFull;
         private Thread thprocEventLoop;
+
+        /* There are 2 defence when event list(listEventData) too larg to accomplish
+         *  1. _nIncreaceOverCount: if increace over (_nIncreaceOverCount) 5 times
+         *     set _blIncreaseTooFast= true
+         *  2. nMaxEvenCont: the watchdog thread monitor listEventData.Count if over nMaxEvenCont
+         *     set _blIncreaseTooFast= true
+         * when (_blIncreaseTooFast== true)
+         * addTask() is going to spinUntion (listEventData.Count==0)
+         */
+        private const int nMaxEvenCont = 1000;
+        private const int _nIncreaceOverCount = 10;
+        int _taskCountLastTime = 0;  //remember last event count of listEventData that under (listEventData.Count + _nIncreaceOverCount)
+        int _taskCountIncreasedCount = 0; //if this Count over 5 times, then set ( _blIncreaseTooFast= true)
+        bool _blIncreaseTooFast = false; //flag, if true, going to spinUntil listEventData.Count ==0
 
 
 
@@ -183,6 +196,18 @@ namespace ToolBoxLib
 
         public int addTask(CEventInfo cTaskInof)
         {
+            //SpinWait.SpinUntil(() => false, _taskCountIncreasedCount * 100);
+            if (_blIncreaseTooFast == true)
+            {
+                
+                //CDebug.jmsgt($"[addTask]Tooo Fast ... wait [{listEventData.Count}]");
+                SpinWait.SpinUntil(() => (listEventData.Count==0), -1 );
+                _blIncreaseTooFast = false;
+                //CDebug.jmsgt($"[addTask]Tooo Fast ... Done [{listEventData.Count }]★");
+
+
+            }
+
             CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
             _cTaskInof = cTaskInof;
             listEventData.Add(_cTaskInof);
@@ -209,20 +234,21 @@ namespace ToolBoxLib
 
         private void MonitlistEventDataFull()
         {
-            while (m_stop== false)
+            while (m_stop == false)
             {
-                SpinWait.SpinUntil(() => (m_stop==true)||(listEventData.Count >= nMaxEvenCont), -1);
+                SpinWait.SpinUntil(() => (m_stop == true) || (listEventData.Count >= nMaxEvenCont), -1);
                 if (m_stop == true)
                     break;
-                Monitor.Enter(listEventData);
+                _blIncreaseTooFast = true;
+                //Monitor.Enter(listEventData);
                 //listEventData.RemoveAt(0);
-                CEventInfo _dummuy;
-                listEventData.TryTake(out _dummuy);
-                Monitor.Exit(listEventData);
+                //CEventInfo _dummuy;
+                //listEventData.TryTake(out _dummuy);
+                //Monitor.Exit(listEventData);
             }
         }
 
-     
+        
         private void procEventLoop()
         {
             while (m_stop== false)
@@ -230,22 +256,41 @@ namespace ToolBoxLib
                 SpinWait.SpinUntil(() => listEventData.Count > 0 || m_stop==true, -1);
                 if (m_stop == true)
                 {
+                    CUtil.clearConcurrentBag(listEventData);
                     break;
                 }
                 if (listEventData.Count > 0 )
                 {
+                    int nTaskCount = listEventData.Count;
+                    if ( (_blIncreaseTooFast == false) && (nTaskCount > (_taskCountLastTime+ _nIncreaceOverCount)))
+                    {
+                        
+                        _taskCountLastTime = nTaskCount;
+                        _taskCountIncreasedCount++;
+                        if (_taskCountIncreasedCount > 5)
+                        {
+                            //CDebug.jmsgEx($"[EventPorc] [_taskCountIncreasedCount > {_taskCountIncreasedCount}]SpinUntil:[{_taskCountIncreasedCount * 10}]");
+                            //SpinWait.SpinUntil(() => false, _taskCountIncreasedCount * 100);
+                            _blIncreaseTooFast = true;
+                            _taskCountIncreasedCount = 0;
+                            _taskCountLastTime = 0;
+                        }
+                    }
+                    
+
+                    //CDebug.jmsgEx($"[EventPorc] Task Count[{nTaskCount}/[{_taskCountLastTime}]][{_taskCountIncreasedCount}/5]");
                     try
                     {
                         //取得第一筆資料
                         CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
-                        Monitor.Enter(listEventData);
+                       // Monitor.Enter(listEventData);
                         //_cTaskInof = listEventData[0];
                         //listEventData.RemoveAt(0);
                         listEventData.TryTake(out _cTaskInof);
                         if (_cTaskInof == null)
                             continue;
                     
-                        Monitor.Exit(listEventData);
+                        //Monitor.Exit(listEventData);
 
                         InvokeDelegate fnProcThis;
                     
