@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Concurrent;
+
 namespace ToolBoxLib
 {
     /*Example:
@@ -132,10 +134,12 @@ namespace ToolBoxLib
         public bool IsAlive { get { return thprocEventLoop.IsAlive; } private set { return; } }
         public InvokeDelegateAddEvent delgAddEvent;
 
-        private List<CEventInfo> listEventData = new List<CEventInfo>();
+        //private List<CEventInfo> listEventData = new List<CEventInfo>();
+        private ConcurrentBag<CEventInfo> listEventData = new ConcurrentBag<CEventInfo>();
         public int eventLeftCount { get { return listEventData.Count; } private set { return; } }
-        
-        private List<Thread> listProcThread = new List<Thread>();
+
+        //private List<Thread> listProcThread = new List<Thread>();
+        private ConcurrentBag<Thread> listProcThread = new ConcurrentBag<Thread>();
         private Dictionary<UInt32, InvokeDelegate> listProcFuncitons = new Dictionary<UInt32, InvokeDelegate>();
         private volatile bool m_stop = true;
         private int nMaxEvenCont = 5000;
@@ -211,7 +215,9 @@ namespace ToolBoxLib
                 if (m_stop == true)
                     break;
                 Monitor.Enter(listEventData);
-                listEventData.RemoveAt(0);
+                //listEventData.RemoveAt(0);
+                CEventInfo _dummuy;
+                listEventData.TryTake(out _dummuy);
                 Monitor.Exit(listEventData);
             }
         }
@@ -233,8 +239,9 @@ namespace ToolBoxLib
                         //取得第一筆資料
                         CEventInfo _cTaskInof = new CEventInfo(4294967295);///初始化UInt32最大值
                         Monitor.Enter(listEventData);
-                        _cTaskInof = listEventData[0];
-                        listEventData.RemoveAt(0);
+                        //_cTaskInof = listEventData[0];
+                        //listEventData.RemoveAt(0);
+                        listEventData.TryTake(out _cTaskInof);
                         if (_cTaskInof == null)
                             continue;
                     

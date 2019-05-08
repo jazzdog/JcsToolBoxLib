@@ -302,6 +302,22 @@ namespace ToolBoxLib
             
             
         }
+
+        public static string getMac(int nIndex = 0)
+        {
+            List<string> listMac = getMacAddr();
+            int nCount = listMac.Count;
+            if (nCount>0 && nIndex < nCount)
+            {
+                return listMac[nIndex];
+            }
+            else
+            {
+                return listMac[0];
+            }
+
+        }
+
         public static List<string> getMacAddr()
         {
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();

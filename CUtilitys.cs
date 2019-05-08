@@ -149,6 +149,19 @@ namespace ToolBoxLib
             else
                 return "";
         }
+
+        public static bool strcmp(string strA, string strB, bool blCaseless = true)
+        {
+            if (blCaseless == true)
+            {
+                return (strA.ToLower().ToString() == strB.ToLower().ToString()) ;
+            }
+            else
+            {
+                return (strA == strB);
+            }
+        }
+
         public static string StringToUnicode(string srcText)
         {
             string dst = "";
