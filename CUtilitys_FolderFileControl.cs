@@ -355,6 +355,35 @@ namespace ToolBoxLib
             }
 
         }
+        
+        public static string getFileNameformFullPath(string strFullPath)
+        {
+            int nFileStart = strFullPath.LastIndexOf('\\');
+            if(nFileStart==-1)
+                nFileStart = strFullPath.LastIndexOf('/');
+            if (nFileStart == -1)
+                return strFullPath;
+            else
+            {
+                string FileName = strFullPath.Substring(nFileStart+1);
+                return FileName;
+            }
+
+        }
+        public static string StrLeft(string s, int length)
+        {
+            return s.Substring(0, length);
+        }
+
+        public static string StrRigth(string s, int length)
+        {
+            return s.Substring(s.Length - length);
+        }
+
+        public static string StrMid(string s, int start, int length)
+        {
+            return s.Substring(start, length);
+        }
 
         public static bool FileRename(string strPathSource, string strNewFileName)
         {
