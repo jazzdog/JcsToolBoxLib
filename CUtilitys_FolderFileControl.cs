@@ -355,6 +355,52 @@ namespace ToolBoxLib
             }
 
         }
+
+        public static bool openFilderPath(string folderPath)
+        {
+            bool blFolderPath = isFolderExist(folderPath, false);
+            if (blFolderPath == false)
+                return false;
+            else
+            {
+                Process.Start($@"{folderPath}");
+                return true;
+            }
+        }
+        
+
+        public static string getFileFullPath_openFileDialog(string defaultpath = null,string[] filters=null,string strBoxTitle="")
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = (strBoxTitle.Length<=0)?"Select file": strBoxTitle;
+            if (defaultpath == null)
+                //dialog.InitialDirectory = getCurrentPath();// ".\\";
+                dialog.InitialDirectory = ".\\";
+            else
+                dialog.InitialDirectory = defaultpath;
+            string strFilter = "";
+            if (filters == null)
+            {
+                strFilter = $"ALL files (*.*)|*.*";
+            }
+            else
+            {
+                foreach (string ext in filters)
+                {
+                    strFilter += $"{ext.ToUpper()} Files (*.{ext.ToLower()})|*.{ext}|";
+                }
+                strFilter = strFilter.Substring(0, strFilter.Length - 1);
+            }
+            
+            dialog.Filter = strFilter;
+            string fullpath = "" ;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                //MessageBox.Show(dialog.FileName);
+                fullpath = dialog.FileName;
+            }
+            return fullpath;
+        }
         
         public static string getFileNameformFullPath(string strFullPath)
         {

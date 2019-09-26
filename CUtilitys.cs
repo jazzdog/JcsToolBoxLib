@@ -89,6 +89,13 @@ namespace ToolBoxLib
                 return false;
         }
 
+        public static string stringReverse(string strInput)
+        {
+            char[] caAry = strInput.ToCharArray();
+            Array.Reverse(caAry);            
+            return new string(caAry); 
+        }
+
         public static string Base64Encode(string AStr)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(AStr));

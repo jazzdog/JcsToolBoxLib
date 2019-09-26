@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Diagnostics;
 
 
 namespace ToolBoxLib
@@ -37,6 +38,54 @@ namespace ToolBoxLib
         {
             return System.Windows.Forms.Application.StartupPath; //執行程式的路徑;//Directory.GetCurrentDirectory();
             //return m_strParentPath;
+        }
+
+
+        public static string exeCommands(string exeCmd, string strArg = "",string workingFolderPath="")
+        {
+            bool blFolderPath = isFolderExist(workingFolderPath, true);
+            if (blFolderPath == false)
+            {
+                //return $"[Err]can't create path:{workingFolderPath}";
+                workingFolderPath = ".\\"; //沒有指定則預設目錄在桌面
+            }
+
+            // Start the child process.
+            Process p = new Process();
+            // Redirect the output stream of the child process.
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            //p.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
+            p.StartInfo.RedirectStandardError = true;   //重定向标准错误输
+
+
+            p.StartInfo.FileName = exeCmd;
+            p.StartInfo.Arguments = strArg;
+            p.StartInfo.CreateNoWindow = true;
+
+            
+
+            p.StartInfo.WorkingDirectory = workingFolderPath;
+            p.Start();
+            
+            //p.StandardInput.WriteLine(arg);
+            //p.StandardInput.AutoFlush = true;
+
+            // Do not wait for the child process to exit before
+            // reading to the end of its redirected stream.
+            // p.WaitForExit();
+            // Read the output stream first and then wait.
+
+            string StandardOutput = p.StandardOutput.ReadToEnd();
+            string StandardError = p.StandardError.ReadToEnd();
+
+
+            string strRet = $"[StandardOutput:{StandardOutput}];\r\n[StandardError:{StandardError}]"; 
+
+            p.WaitForExit();
+            p.Close();
+            return strRet;
+
         }
 
         public static void copyText(string strCopyText)

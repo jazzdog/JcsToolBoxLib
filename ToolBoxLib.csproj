@@ -101,6 +101,7 @@
     <Compile Include="CUtilitys_System.cs" />
     <Compile Include="CUtilitys_SystemHook.cs" />
     <Compile Include="CUtilitys_WatchDog.cs" />
+    <Compile Include="cWinNeighborhood.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
